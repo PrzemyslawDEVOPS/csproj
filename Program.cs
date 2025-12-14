@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Claims;
+using Microsoft.Extensions.DependencyInjection;
 
 // ==========================================
 // 1. LOGIKA STARTOWA
@@ -44,10 +45,42 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-// Inicjalizacja danych (opcjonalne, żebyś miał użytkownika Admina na start)
+// Inicjalizacja danych - tworzenie roli Admin i użytkownika administratora
 using (var scope = app.Services.CreateScope())
 {
-    // Tu można dodać kod seedowania, ale na razie zostawmy czysto.
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+    
+    // Utwórz rolę Admin, jeśli nie istnieje
+    if (!await roleManager.RoleExistsAsync("Admin"))
+    {
+        await roleManager.CreateAsync(new IdentityRole("Admin"));
+    }
+    
+    // Utwórz użytkownika administratora, jeśli nie istnieje
+    var adminEmail = "admin@befit.pl";
+    var adminPassword = "Admin123!";
+    
+    var adminUser = await userManager.FindByEmailAsync(adminEmail);
+    if (adminUser == null)
+    {
+        adminUser = new IdentityUser
+        {
+            UserName = adminEmail,
+            Email = adminEmail,
+            EmailConfirmed = true
+        };
+        
+        var result = await userManager.CreateAsync(adminUser, adminPassword);
+        if (result.Succeeded)
+        {
+            await userManager.AddToRoleAsync(adminUser, "Admin");
+        }
+    }
+    else if (!await userManager.IsInRoleAsync(adminUser, "Admin"))
+    {
+        await userManager.AddToRoleAsync(adminUser, "Admin");
+    }
 }
 
 app.Run();
