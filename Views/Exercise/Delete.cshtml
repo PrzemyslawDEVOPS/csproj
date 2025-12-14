@@ -1,0 +1,21 @@
+@model Exercise
+@{
+    ViewData["Title"] = "Usuń ćwiczenie";
+}
+
+<h2>Usuń ćwiczenie</h2>
+
+<h3>Czy na pewno chcesz usunąć to ćwiczenie?</h3>
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">Nazwa</dt>
+        <dd class="col-sm-10">@Model.Name</dd>
+    </dl>
+
+    <form asp-action="DeleteConfirmed" method="post">
+        <input type="hidden" asp-for="ExerciseId" />
+        <input type="submit" value="Usuń" class="btn btn-danger" />
+        <a asp-action="Index" class="btn btn-secondary">Anuluj</a>
+    </form>
+</div>
+

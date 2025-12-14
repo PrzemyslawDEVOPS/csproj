@@ -1,0 +1,133 @@
+@{
+    ViewData["Title"] = "Strona główna";
+}
+
+<div class="hero-section">
+    <div class="container text-center">
+        <h1 class="display-3 fw-bold">
+            <i class="bi bi-activity"></i> Witaj w BeFit!
+        </h1>
+        <p class="lead">Twój osobisty trener fitness. Śledź swoje treningi, osiągaj cele i bądź w formie!</p>
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <a asp-controller="WorkoutSession" asp-action="Create" class="btn btn-light btn-lg me-2">
+                <i class="bi bi-plus-circle"></i> Rozpocznij trening
+            </a>
+            <a asp-controller="Exercise" asp-action="Index" class="btn btn-outline-light btn-lg">
+                <i class="bi bi-barbell"></i> Przeglądaj ćwiczenia
+            </a>
+        }
+        else
+        {
+            <a asp-controller="Account" asp-action="Register" class="btn btn-light btn-lg me-2">
+                <i class="bi bi-person-plus"></i> Dołącz teraz
+            </a>
+            <a asp-controller="Account" asp-action="Login" class="btn btn-outline-light btn-lg">
+                <i class="bi bi-box-arrow-in-right"></i> Zaloguj się
+            </a>
+        }
+    </div>
+</div>
+
+<div class="container">
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="feature-card card">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon">
+                        <i class="bi bi-barbell"></i>
+                    </div>
+                    <h4 class="card-title">Zarządzaj ćwiczeniami</h4>
+                    <p class="card-text">Dodawaj i edytuj ćwiczenia. Twórz własną bazę treningową dostosowaną do Twoich potrzeb.</p>
+                    <a asp-controller="Exercise" asp-action="Index" class="btn btn-primary">
+                        Zobacz ćwiczenia <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card card">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon">
+                        <i class="bi bi-calendar-check"></i>
+                    </div>
+                    <h4 class="card-title">Śledź sesje treningowe</h4>
+                    <p class="card-text">Rejestruj swoje treningi, zapisuj czas rozpoczęcia i zakończenia każdej sesji.</p>
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <a asp-controller="WorkoutSession" asp-action="Index" class="btn btn-primary">
+                            Moje sesje <i class="bi bi-arrow-right"></i>
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Account" asp-action="Register" class="btn btn-primary">
+                            Zacznij teraz <i class="bi bi-arrow-right"></i>
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card card">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon">
+                        <i class="bi bi-graph-up"></i>
+                    </div>
+                    <h4 class="card-title">Szczegółowe statystyki</h4>
+                    <p class="card-text">Monitoruj swoje postępy. Zapisuj serie, powtórzenia i ciężary dla każdego ćwiczenia.</p>
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <a asp-controller="WorkoutSessionDetail" asp-action="Index" class="btn btn-primary">
+                            Zobacz statystyki <i class="bi bi-arrow-right"></i>
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Account" asp-action="Register" class="btn btn-primary">
+                            Zacznij teraz <i class="bi bi-arrow-right"></i>
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-lightning-charge"></i> Szybkie akcje</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <a asp-controller="WorkoutSession" asp-action="Create" class="btn btn-outline-primary w-100">
+                                    <i class="bi bi-plus-circle"></i><br>Nowa sesja
+                                </a>
+                            </div>
+                            <div class="col-md-3">
+                                <a asp-controller="WorkoutSessionDetail" asp-action="Create" class="btn btn-outline-primary w-100">
+                                    <i class="bi bi-list-check"></i><br>Dodaj szczegół
+                                </a>
+                            </div>
+                            <div class="col-md-3">
+                                <a asp-controller="Exercise" asp-action="Index" class="btn btn-outline-primary w-100">
+                                    <i class="bi bi-barbell"></i><br>Ćwiczenia
+                                </a>
+                            </div>
+                            <div class="col-md-3">
+                                <a asp-controller="WorkoutSession" asp-action="Index" class="btn btn-outline-primary w-100">
+                                    <i class="bi bi-calendar"></i><br>Historia
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+

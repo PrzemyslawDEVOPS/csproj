@@ -1,0 +1,41 @@
+@model IEnumerable<WorkoutSessionDetail>
+@{
+    ViewData["Title"] = "Szczegóły treningów";
+}
+
+<h2>Szczegóły treningów</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Dodaj nowy szczegół</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Ćwiczenie</th>
+            <th>Sesja</th>
+            <th>Serie</th>
+            <th>Powtórzenia</th>
+            <th>Waga (kg)</th>
+            <th>Akcje</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@(item.Exercise?.Name ?? "N/A")</td>
+                <td>@item.WorkoutSessionId</td>
+                <td>@item.Sets</td>
+                <td>@item.Repetitions</td>
+                <td>@item.Weight</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.WorkoutSessionDetailId" class="btn btn-sm btn-info">Szczegóły</a>
+                    <a asp-action="Edit" asp-route-id="@item.WorkoutSessionDetailId" class="btn btn-sm btn-warning">Edytuj</a>
+                    <a asp-action="Delete" asp-route-id="@item.WorkoutSessionDetailId" class="btn btn-sm btn-danger">Usuń</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

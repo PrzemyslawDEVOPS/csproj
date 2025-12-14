@@ -1,0 +1,27 @@
+@model WorkoutSessionDetail
+@{
+    ViewData["Title"] = "Szczegóły treningu";
+}
+
+<h2>Szczegóły treningu</h2>
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">Ćwiczenie</dt>
+        <dd class="col-sm-10">@(Model.Exercise?.Name ?? "N/A")</dd>
+        <dt class="col-sm-2">ID Sesji</dt>
+        <dd class="col-sm-10">@Model.WorkoutSessionId</dd>
+        <dt class="col-sm-2">Serie</dt>
+        <dd class="col-sm-10">@Model.Sets</dd>
+        <dt class="col-sm-2">Powtórzenia</dt>
+        <dd class="col-sm-10">@Model.Repetitions</dd>
+        <dt class="col-sm-2">Waga (kg)</dt>
+        <dd class="col-sm-10">@Model.Weight</dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.WorkoutSessionDetailId" class="btn btn-warning">Edytuj</a>
+    <a asp-action="Delete" asp-route-id="@Model.WorkoutSessionDetailId" class="btn btn-danger">Usuń</a>
+    <a asp-action="Index" class="btn btn-secondary">Powrót do listy</a>
+</div>
+

@@ -1,0 +1,79 @@
+@model WorkoutSession
+@{
+    ViewData["Title"] = "Dodaj sesję treningową";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white text-center py-3">
+                    <h3 class="mb-0"><i class="bi bi-calendar-plus"></i> Dodaj nową sesję treningową</h3>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Create" method="post">
+                        <div asp-validation-summary="All" class="alert alert-danger"></div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="StartTime" class="form-label fw-semibold">
+                                <i class="bi bi-play-circle"></i> Data i godzina rozpoczęcia
+                            </label>
+                            <input asp-for="StartTime" class="form-control" type="datetime-local" required />
+                            <span asp-validation-for="StartTime" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="EndTime" class="form-label fw-semibold">
+                                <i class="bi bi-stop-circle"></i> Data i godzina zakończenia
+                            </label>
+                            <input asp-for="EndTime" class="form-control" type="datetime-local" required />
+                            <span asp-validation-for="EndTime" class="text-danger"></span>
+                            <small class="form-text text-muted">Data zakończenia musi być późniejsza niż data rozpoczęcia.</small>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Anuluj
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Utwórz sesję
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        // Set default values to current date/time
+        document.addEventListener('DOMContentLoaded', function() {
+            const now = new Date();
+            const startTime = document.querySelector('input[name="StartTime"]');
+            const endTime = document.querySelector('input[name="EndTime"]');
+            
+            // Format: YYYY-MM-DDTHH:mm
+            const formatDateTime = (date) => {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                const hours = String(date.getHours()).padStart(2, '0');
+                const minutes = String(date.getMinutes()).padStart(2, '0');
+                return `${year}-${month}-${day}T${hours}:${minutes}`;
+            };
+            
+            if (startTime && !startTime.value) {
+                startTime.value = formatDateTime(now);
+            }
+            
+            if (endTime && !endTime.value) {
+                const endDateTime = new Date(now.getTime() + 60 * 60 * 1000); // Add 1 hour
+                endTime.value = formatDateTime(endDateTime);
+            }
+        });
+    </script>
+}
+

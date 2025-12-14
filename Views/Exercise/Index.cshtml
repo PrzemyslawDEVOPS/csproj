@@ -1,0 +1,69 @@
+@model IEnumerable<Exercise>
+@{
+    ViewData["Title"] = "Ćwiczenia";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0"><i class="bi bi-barbell"></i> Ćwiczenia</h2>
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Dodaj nowe ćwiczenie
+            </a>
+        }
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-center">
+            <i class="bi bi-info-circle"></i> Brak ćwiczeń w bazie.
+            @if (User.IsInRole("Admin"))
+            {
+                <text>Dodaj pierwsze ćwiczenie jako administrator!</text>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th><i class="bi bi-list-ul"></i> Nazwa</th>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <th class="text-end"><i class="bi bi-gear"></i> Akcje</th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <a asp-action="Details" asp-route-id="@item.ExerciseId" class="text-decoration-none fw-semibold">
+                                        <i class="bi bi-arrow-right-circle text-primary"></i> @item.Name
+                                    </a>
+                                </td>
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <td class="text-end">
+                                        <a asp-action="Edit" asp-route-id="@item.ExerciseId" class="btn btn-sm btn-warning me-1">
+                                            <i class="bi bi-pencil"></i> Edytuj
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.ExerciseId" class="btn btn-sm btn-danger">
+                                            <i class="bi bi-trash"></i> Usuń
+                                        </a>
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>
+
