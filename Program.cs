@@ -110,7 +110,8 @@ public class Exercise
 
     [Required]
     [StringLength(100, MinimumLength = 2)]
-    public string? Name { get; set; } // Dodano '?' żeby uciszyć błąd
+    [Display(Name = "Nazwa ćwiczenia")]
+    public string? Name { get; set; }
 }
 
 public class WorkoutSession
@@ -119,14 +120,16 @@ public class WorkoutSession
     public int WorkoutSessionId { get; set; }
 
     [Required]
-    public string? UserId { get; set; } // Dodano '?'
+    public string? UserId { get; set; }
 
     [Required]
     [DataType(DataType.DateTime)]
+    [Display(Name = "Data i godzina rozpoczęcia")]
     public DateTime StartTime { get; set; }
 
     [Required]
     [DataType(DataType.DateTime)]
+    [Display(Name = "Data i godzina zakończenia")]
     [CustomValidation(typeof(WorkoutSession), nameof(ValidateEndTime))]
     public DateTime EndTime { get; set; }
 
@@ -150,31 +153,36 @@ public class WorkoutSessionDetail
     public int WorkoutSessionDetailId { get; set; }
 
     [Required]
+    [Display(Name = "Sesja treningowa")]
     public int WorkoutSessionId { get; set; }
     [ForeignKey("WorkoutSessionId")]
-    public WorkoutSession? WorkoutSession { get; set; } // Dodano '?'
+    public WorkoutSession? WorkoutSession { get; set; }
 
     [Required]
+    [Display(Name = "Ćwiczenie")]
     public int ExerciseId { get; set; }
     [ForeignKey("ExerciseId")]
-    public Exercise? Exercise { get; set; } // Dodano '?'
+    public Exercise? Exercise { get; set; }
 
     [Required]
     [StringLength(450)]
-    public string? UserId { get; set; } // Dodano '?'
+    public string? UserId { get; set; }
     [ForeignKey("UserId")]
-    public IdentityUser? User { get; set; } // Dodano '?'
+    public IdentityUser? User { get; set; }
 
     [Required]
     [Range(1, 1000)]
+    [Display(Name = "Liczba serii")]
     public int Sets { get; set; }
 
     [Required]
     [Range(1, 10000)]
+    [Display(Name = "Liczba powtórzeń w serii")]
     public int Repetitions { get; set; }
 
     [Required]
     [Range(0, 1000)]
+    [Display(Name = "Obciążenie (kg)")]
     public decimal Weight { get; set; }
 }
 
@@ -486,8 +494,17 @@ public class WorkoutSessionDetailController : Controller
 
     public IActionResult Create()
     {
+        string? userId = _userManager.GetUserId(User);
         ViewData["ExerciseId"] = new SelectList(_context.Exercises, "ExerciseId", "Name");
-        ViewData["WorkoutSessionId"] = new SelectList(_context.WorkoutSessions.Where(w => w.UserId == _userManager.GetUserId(User)), "WorkoutSessionId", "WorkoutSessionId");
+        ViewData["WorkoutSessionId"] = new SelectList(
+            _context.WorkoutSessions
+                .Where(w => w.UserId == userId)
+                .Select(w => new { 
+                    w.WorkoutSessionId, 
+                    DisplayText = $"{w.StartTime:dd.MM.yyyy HH:mm} - {w.EndTime:dd.MM.yyyy HH:mm}" 
+                }),
+            "WorkoutSessionId", 
+            "DisplayText");
         return View();
     }
 
@@ -507,9 +524,17 @@ public class WorkoutSessionDetailController : Controller
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-        // Fix: Dodano rzutowanie, żeby SelectList nie przyjmował nulli
         ViewData["ExerciseId"] = new SelectList(_context.Exercises, "ExerciseId", "Name", detail.ExerciseId);
-        ViewData["WorkoutSessionId"] = new SelectList(_context.WorkoutSessions.Where(w => w.UserId == detail.UserId), "WorkoutSessionId", "WorkoutSessionId", detail.WorkoutSessionId);
+        ViewData["WorkoutSessionId"] = new SelectList(
+            _context.WorkoutSessions
+                .Where(w => w.UserId == detail.UserId)
+                .Select(w => new { 
+                    w.WorkoutSessionId, 
+                    DisplayText = $"{w.StartTime:dd.MM.yyyy HH:mm} - {w.EndTime:dd.MM.yyyy HH:mm}" 
+                }),
+            "WorkoutSessionId", 
+            "DisplayText", 
+            detail.WorkoutSessionId);
         return View(detail);
     }
 
@@ -522,7 +547,16 @@ public class WorkoutSessionDetailController : Controller
         if (detail == null || detail.UserId != userId) return Forbid();
 
         ViewData["ExerciseId"] = new SelectList(_context.Exercises, "ExerciseId", "Name", detail.ExerciseId);
-        ViewData["WorkoutSessionId"] = new SelectList(_context.WorkoutSessions.Where(w => w.UserId == userId), "WorkoutSessionId", "WorkoutSessionId", detail.WorkoutSessionId);
+        ViewData["WorkoutSessionId"] = new SelectList(
+            _context.WorkoutSessions
+                .Where(w => w.UserId == userId)
+                .Select(w => new { 
+                    w.WorkoutSessionId, 
+                    DisplayText = $"{w.StartTime:dd.MM.yyyy HH:mm} - {w.EndTime:dd.MM.yyyy HH:mm}" 
+                }),
+            "WorkoutSessionId", 
+            "DisplayText", 
+            detail.WorkoutSessionId);
         return View(detail);
     }
 
@@ -559,7 +593,16 @@ public class WorkoutSessionDetailController : Controller
             return RedirectToAction(nameof(Index));
         }
         ViewData["ExerciseId"] = new SelectList(_context.Exercises, "ExerciseId", "Name", detail.ExerciseId);
-        ViewData["WorkoutSessionId"] = new SelectList(_context.WorkoutSessions.Where(w => w.UserId == userId), "WorkoutSessionId", "WorkoutSessionId", detail.WorkoutSessionId);
+        ViewData["WorkoutSessionId"] = new SelectList(
+            _context.WorkoutSessions
+                .Where(w => w.UserId == userId)
+                .Select(w => new { 
+                    w.WorkoutSessionId, 
+                    DisplayText = $"{w.StartTime:dd.MM.yyyy HH:mm} - {w.EndTime:dd.MM.yyyy HH:mm}" 
+                }),
+            "WorkoutSessionId", 
+            "DisplayText", 
+            detail.WorkoutSessionId);
         return View(detail);
     }
 

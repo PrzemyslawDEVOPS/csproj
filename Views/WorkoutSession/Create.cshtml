@@ -16,7 +16,7 @@
                         
                         <div class="mb-3">
                             <label asp-for="StartTime" class="form-label fw-semibold">
-                                <i class="bi bi-play-circle"></i> Data i godzina rozpoczęcia
+                                <i class="bi bi-play-circle"></i> @Html.DisplayNameFor(m => m.StartTime)
                             </label>
                             <input asp-for="StartTime" class="form-control" type="datetime-local" required />
                             <span asp-validation-for="StartTime" class="text-danger"></span>
@@ -24,7 +24,7 @@
                         
                         <div class="mb-3">
                             <label asp-for="EndTime" class="form-label fw-semibold">
-                                <i class="bi bi-stop-circle"></i> Data i godzina zakończenia
+                                <i class="bi bi-stop-circle"></i> @Html.DisplayNameFor(m => m.EndTime)
                             </label>
                             <input asp-for="EndTime" class="form-control" type="datetime-local" required />
                             <span asp-validation-for="EndTime" class="text-danger"></span>

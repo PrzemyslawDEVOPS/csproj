@@ -16,7 +16,7 @@
                         <input type="hidden" asp-for="ExerciseId" />
                         <div class="mb-3">
                             <label asp-for="Name" class="form-label fw-semibold">
-                                <i class="bi bi-barbell"></i> Nazwa ćwiczenia
+                                <i class="bi bi-barbell"></i> @Html.DisplayNameFor(m => m.Name)
                             </label>
                             <input asp-for="Name" class="form-control" placeholder="np. Przysiady, Wyciskanie na ławce" />
                             <span asp-validation-for="Name" class="text-danger"></span>
